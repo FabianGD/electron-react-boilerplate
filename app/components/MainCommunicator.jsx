@@ -241,17 +241,24 @@ class MainUnit extends Component<props> {
 // <PlotlyChild xdata={this.state.lastData} ydata={this.state.lastData}/>
 
 MainUnit.propTypes = {
-  serverCreated: PropTypes.bool.isRequired,
-  pyProc: PropTypes.instanceOf(childProcess).isRequired,
-  requester: PropTypes.instanceOf(zmq.socket('req')).isRequired,
-  lastMessage: PropTypes.string.isRequired,
+  serverCreated: PropTypes.bool,
+  pyProc: PropTypes.oneOfType([PropTypes.instanceOf(childProcess)]),
+  requester: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+  lastMessage: PropTypes.string,
   lastData: PropTypes.shape({
     xdata: PropTypes.arrayOf(PropTypes.number).isRequired,
     ydata: PropTypes.arrayOf(PropTypes.number).isRequired
-  }).isRequired,
+  }),
   classes: PropTypes.oneOfType([PropTypes.object, PropTypes.array]).isRequired
 };
 
+MainUnit.defaultProps = {
+  serverCreated: false,
+  pyProc: null,
+  requester: null,
+  lastMessage: '',
+  lastData: null
+};
 // -------------------------------------------------------------
 // -------------------------------------------------------------
 export default withStyles(styles)(MainUnit);

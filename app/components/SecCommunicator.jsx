@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Button from '@material-ui/core/Button';
-import zmq from 'zeromq';
 
 export default class RequesterUnit extends Component {
   constructor(props) {
@@ -48,6 +47,7 @@ export default class RequesterUnit extends Component {
 
 RequesterUnit.propTypes = {
   serverCreated: PropTypes.bool.isRequired,
-  requester: PropTypes.instanceOf(zmq.socket('req')).isRequired,
+  requester: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
+    .isRequired,
   onRequest: PropTypes.func.isRequired
 };
