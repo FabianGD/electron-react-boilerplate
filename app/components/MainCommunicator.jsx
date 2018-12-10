@@ -34,7 +34,7 @@ const styles = theme => ({
 
 const pyVars = {
   pyPort: '4242',
-  scriptPath: path.join(__dirname, './python/api.py')
+  scriptPath: path.join(__dirname, './python/main.py')
 };
 
 function spawnServer(vars) {
@@ -103,7 +103,7 @@ class MainUnit extends Component<props> {
       proc = spawnServer(pyVars);
       newRequester = zmq.socket('req');
       newRequester.connect(getServerAdress(pyVars.pyPort));
-
+      console.log(newRequester);
       this.setState({
         pyProc: proc,
         serverCreated: true,
@@ -144,8 +144,12 @@ class MainUnit extends Component<props> {
     console.log('Requester: Received', ': [', replyString, ']');
     try {
       const json = JSON.parse(replyString);
-      console.log(json.data);
-      this.setState({ lastPlotlyData: json.data });
+      if (json.data == null) {
+        console.log(json.data);
+        // alert('Message was not readable!')
+      } else {
+        this.setState({ lastPlotlyData: json.data });
+      }
     } catch (err) {
       console.log(err);
     }

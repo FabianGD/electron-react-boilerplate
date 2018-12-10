@@ -3,31 +3,8 @@ import zmq as zmq
 import random
 import json
 
-def parse_port():
-    port = 4242
-    try:
-        print(sys.argv[2])
-        port = int(sys.argv[2])
-    except:
-        pass
-    return port
-
-def generateData(Recharts=False):
-
-    randArrayX = sorted(random.sample(range(1000), k=10))
-    randArrayY = sorted(random.sample(range(1300), k=10))
-
-    if Recharts:
-        data = []
-        for x, y in zip(randArrayX, randArrayY):
-            item = {}
-            item['x'] = x
-            item['y'] = y
-            dataList.append(item)
-    else:
-        data = {'xdata': randArrayX, 'ydata':randArrayY}
-
-    return data
+from interpreter import interpreteMessage
+from helpers import parse_port, generateData
 
 def main(close_only=False):
     print('Python backend actived!')
@@ -65,26 +42,39 @@ def main(close_only=False):
 
         print('Received request: {}'.format(message))
 
-        if b'Hello' in message:
-            socket.send_string('World '+str(id))
-
-        elif b'array' in message:
-            basic_json['data'] = generateData()
-            socket.send_string(json.dumps(basic_json))
-
-        elif b'kill' in message:
+        # Understanding the message
+        if b'kill' in message:
             socket.send_string('Killing myself now.')
             context.destroy()
             break
-
         else:
-            socket.send(message)
+            reply, order = interpreteMessage(message)
+
+            if reply and order:
+                print(reply)
+                print(order)
+
+                if 'randomArray' in order.keys():
+                    length = order['randomArray']
+                    basic_json['data'] = generateData(length=length)
+
+                basic_json['reply'] = reply
+                basic_json['order'] = order
+                pass
+            elif reply and not order:
+                basic_json['reply'] = reply
+                pass
+            else:
+                basic_json['error'] = 'ERROR'
+                pass
+
+            socket.send_string(json.dumps(basic_json))
+
         #  Send reply back to client
 
 if __name__ == '__main__':
     try:
         main()
-    except: #  zmq.error.ZMQError:
-    #     main(close_only=True)
+    except:
        pass
 

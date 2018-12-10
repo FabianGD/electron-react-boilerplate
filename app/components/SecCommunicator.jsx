@@ -10,11 +10,21 @@ export default class RequesterUnit extends Component {
 
   onClick(msg) {
     const { requester, onRequest } = this.props;
-    console.log('Sending: ', msg);
+    const messageJSON = {
+      sendTime: new Date().toTimeString(),
+      messageContent: { msg }
+    };
+    let messageString = JSON.stringify(messageJSON);
+
+    if (msg === 'damagedMessage') {
+      messageString = messageString.substring(2);
+    }
+
+    console.log('Sending: ', messageString);
     // Send the request via the requester object
-    requester.send(msg);
+    requester.send(messageString);
     // Save the request to the parents lastMessage state
-    onRequest(msg);
+    onRequest(messageString);
   }
 
   render() {
@@ -26,16 +36,25 @@ export default class RequesterUnit extends Component {
           variant="text"
           color="secondary"
           width="300"
-          onClick={() => this.onClick('Hello')}
+          onClick={() => this.onClick('damagedMessage')}
           disabled={!serverCreated}
         >
-          Send information
+          Send damaged message
         </Button>
         <Button
           variant="text"
           color="secondary"
           width="300"
-          onClick={() => this.onClick('array')}
+          onClick={() => this.onClick('validMessage')}
+          disabled={!serverCreated}
+        >
+          Send valid message
+        </Button>
+        <Button
+          variant="text"
+          color="secondary"
+          width="300"
+          onClick={() => this.onClick({ randomArray: 34 })}
           disabled={!serverCreated}
         >
           Ask for random array
