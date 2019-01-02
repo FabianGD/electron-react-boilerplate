@@ -24,8 +24,10 @@ export default class PlotlyLinePlot extends Component {
                 "'Roboto Condensed', 'Open Sans', verdana, arial, sans-serif",
               size: 18
             },
-            width: '99%',
-            height: 400,
+            // width: '60%',
+            // height: '80%',
+            useResizeHandler: true,
+            autosize: true,
             margin: {
               l: 60,
               r: 60,
@@ -51,6 +53,8 @@ export default class PlotlyLinePlot extends Component {
               ticks: 'outside'
             }
           }}
+          useResizeHandler
+          style={{ width: '95%', height: '100%' }}
         />
       </div>
     );

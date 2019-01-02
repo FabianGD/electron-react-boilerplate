@@ -15,8 +15,9 @@ import RequesterUnit from './SecCommunicator';
 const styles = theme => ({
   root: {
     height: '600px',
+    marginTop: theme.spacing.unit * 10,
     // display: "grid",
-    marginTop: theme.spacing.unit * 2,
+    // marginTop: theme.spacing.unit * 2,
     marginLeft: theme.spacing.unit * 3,
     marginRight: theme.spacing.unit * 3
   },
@@ -60,6 +61,7 @@ class MainUnit extends Component<props> {
       pyProc: null,
       requester: null,
       lastMessage: '',
+      currentFile: '/',
       lastPlotlyData: { xdata: [0, 1, 2], ydata: [0, 1, 2] }
     };
 
@@ -67,11 +69,14 @@ class MainUnit extends Component<props> {
     this.handleKill = this.handleKill.bind(this);
     this.handleMessage = this.handleMessage.bind(this);
     this.onRequest = this.onRequest.bind(this);
+    this.handleOpen = this.handleOpen.bind(this);
 
     this.requesterCallbackEstablished = false;
   }
 
-  componentDidMount() {}
+  componentDidMount() {
+    // console.log(window)
+  }
 
   componentDidUpdate() {
     const { requester, lastMessage } = this.state;
@@ -160,9 +165,31 @@ class MainUnit extends Component<props> {
     this.setState({ lastMessage: message });
   }
 
+  handleOpen() {
+    window.electron.dialog.showOpenDialog(
+      {
+        title: 'Open a file',
+        filters: [
+          { name: 'Text files', extensions: ['txt', 'tsv', 'asc'] },
+          { name: 'All files', extensions: [''] }
+        ],
+        properties: ['openFile']
+      },
+      file => {
+        this.setState({ currentFile: file });
+        console.log(file);
+      }
+    );
+  }
+
   render() {
     const { classes } = this.props;
-    const { serverCreated, requester, lastPlotlyData } = this.state;
+    const {
+      serverCreated,
+      requester,
+      lastPlotlyData,
+      currentFile
+    } = this.state;
     return (
       <div className={classes.root}>
         <Grid container spacing={8}>
@@ -233,6 +260,8 @@ class MainUnit extends Component<props> {
                 <Typography align="center" variant="body1">
                   -- W.I.P --
                 </Typography>
+                <Button onClick={() => this.handleOpen()}>Open file</Button>
+                <Typography>{currentFile}</Typography>
               </Paper>
             </Grid>
           </Grid>
@@ -245,8 +274,8 @@ class MainUnit extends Component<props> {
 // <PlotlyChild xdata={this.state.lastData} ydata={this.state.lastData}/>
 
 MainUnit.propTypes = {
-  serverCreated: PropTypes.bool,
-  pyProc: PropTypes.oneOfType([PropTypes.instanceOf(childProcess)]),
+  // serverCreated: PropTypes.bool,
+  // pyProc: PropTypes.oneOfType([PropTypes.instanceOf(childProcess)]),
   requester: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   lastMessage: PropTypes.string,
   lastData: PropTypes.shape({
@@ -257,8 +286,8 @@ MainUnit.propTypes = {
 };
 
 MainUnit.defaultProps = {
-  serverCreated: false,
-  pyProc: null,
+  // serverCreated: false,
+  // spyProc: null,
   requester: null,
   lastMessage: '',
   lastData: null

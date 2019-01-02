@@ -25,7 +25,7 @@ const myTheme = createMuiTheme({
   palette: {
     primary: {
       // light: '#757ce8',
-      main: '#ff4400'
+      main: '#0099ff'
       // main: '#3f50b5',
       // dark: '#002884',
       // contrastText: '#fff',
@@ -47,7 +47,10 @@ const styles = theme => ({
     width: 'auto'
   },
   appBar: {
-    position: 'static',
+    position: 'fixed',
+    top: 0,
+    left: 0,
+    bottom: 'auto',
     ...theme.mixins.gutters()
 
     // paddingTop: theme.spacing.unit * 2,
@@ -90,7 +93,7 @@ function Routes(props) {
   return (
     <MuiThemeProvider theme={myTheme}>
       <App className={classes.root}>
-        <AppBar position="static" color="primary" className={classes.appBar}>
+        <AppBar position="fixed" color="primary" className={classes.appBar}>
           <Toolbar>
             <Typography
               variant="h5"

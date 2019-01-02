@@ -8,8 +8,9 @@ def interpreteMessage(rawMessage):
     """
     # Try to load the JSON string. If not successful, return an error message
     try:
-        message = json.loads(str(rawMessage))
-        print(rawMessage, message)
+        strMessage = rawMessage.decode('ascii')
+        message = json.loads(strMessage)
+        print(strMessage, message)
     except Exception as e:
         print(e)
         print('Could not decode JSON message')
@@ -18,19 +19,23 @@ def interpreteMessage(rawMessage):
     # Try to load the message content.
     # If not successful, return an error message
     try:
-        print(messageContent)
         messageContent = message['messageContent']
-    except:
+        print(messageContent.keys())
+    except Exception as e:
+        print(e)
         return ('DecodeError', False)
-        pass
 
     # If both succeeded, do some work from the message data
+
     if 'randomArray' in messageContent.keys():
         try:
             numberOfElements = int(messageContent['randomArray'])
             return ('order accepted', {'randomArray': numberOfElements})
         except TypeError:
             return ('DecodeError', False)
+
+    if 'string' in messageContent.keys():
+        return ('Success with string "{}"'.format(messageContent['string']), False)
 
     return (False, False)
 
